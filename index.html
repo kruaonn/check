@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบบันทึกการส่งงาน & การมาเรียน | ครูปิยะนุช คำพันธ์</title>
+<link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #f9a8d4;
+  --pink-light: #fce7f3;
+  --pink-dark: #ec4899;
+  --purple: #c4b5fd;
+  --purple-light: #ede9fe;
+  --purple-dark: #7c3aed;
+  --yellow: #fde68a;
+  --yellow-light: #fef9c3;
+  --yellow-dark: #d97706;
+  --green: #86efac;
+  --green-light: #dcfce7;
+  --green-dark: #16a34a;
+  --red: #fca5a5;
+  --red-light: #fee2e2;
+  --red-dark: #dc2626;
+  --blue: #93c5fd;
+  --blue-light: #dbeafe;
+  --blue-dark: #2563eb;
+  --gray: #e5e7eb;
+  --gray-light: #f9fafb;
+  --gray-dark: #6b7280;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --white: #ffffff;
+  --shadow: 0 2px 8px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Itim', cursive;
+  background: linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #dbeafe 100%);
+  min-height: 100vh;
+  color: var(--text);
+}
+/* NAV */
+nav {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--pink);
+  padding: 0 16px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; gap: 4px;
+  flex-wrap: wrap;
+}
+.nav-brand {
+  font-size: 15px; font-weight: 700;
+  color: var(--purple-dark);
+  padding: 10px 8px 10px 0;
+  border-right: 2px solid var(--pink);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+.nav-btn {
+  padding: 8px 12px; border: none;
+  background: transparent; cursor: pointer;
+  font-family: 'Itim', cursive; font-size: 14px;
+  color: var(--text-light); border-radius: var(--radius-sm);
+  transition: all 0.2s; white-space: nowrap;
+}
+.nav-btn:hover { background: var(--pink-light); color: var(--pink-dark); }
+.nav-btn.active { background: var(--pink); color: var(--pink-dark); font-weight: 700; }
+
+/* SECTIONS */
+.section { display: none; padding: 16px; max-width: 1200px; margin: 0 auto; }
+.section.active { display: block; }
+
+/* CARDS */
+.card {
+  background: rgba(255,255,255,0.9);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 18px; font-weight: 700;
+  color: var(--purple-dark);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--purple-light);
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* FORM CONTROLS */
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; align-items: flex-end; }
+.form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+label { font-size: 13px; color: var(--text-light); }
+select, input[type="text"], textarea {
+  font-family: 'Itim', cursive; font-size: 15px;
+  padding: 8px 12px; border: 2px solid var(--gray);
+  border-radius: var(--radius-sm); background: var(--white);
+  color: var(--text); outline: none; transition: border-color 0.2s;
+}
+select:focus, input[type="text"]:focus, textarea:focus { border-color: var(--purple); }
+textarea { resize: vertical; min-height: 60px; }
+
+/* BUTTONS */
+.btn {
+  font-family: 'Itim', cursive; font-size: 14px;
+  padding: 8px 16px; border: none; border-radius: var(--radius-sm);
+  cursor: pointer; transition: all 0.2s; display: inline-flex;
+  align-items: center; gap: 6px; white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--purple); color: var(--purple-dark); font-weight: 700; }
+.btn-primary:hover { background: var(--purple-dark); color: var(--white); }
+.btn-success { background: var(--green); color: var(--green-dark); font-weight: 700; }
+.btn-success:hover { background: var(--green-dark); color: var(--white); }
+.btn-danger { background: var(--red); color: var(--red-dark); font-weight: 700; }
+.btn-danger:hover { background: var(--red-dark); color: var(--white); }
+.btn-warning { background: var(--yellow); color: var(--yellow-dark); font-weight: 700; }
+.btn-warning:hover { background: var(--yellow-dark); color: var(--white); }
+.btn-gray { background: var(--gray); color: var(--gray-dark); }
+.btn-gray:hover { background: var(--gray-dark); color: var(--white); }
+.btn-sm { padding: 5px 10px; font-size: 13px; }
+
+/* STUDENT LIST FOR ASSIGNMENT */
+.student-grid { display: flex; flex-direction: column; gap: 6px; }
+.student-row {
+  background: var(--gray-light); border-radius: var(--radius-sm);
+  padding: 8px 12px; display: flex; align-items: center; gap: 8px;
+  border: 2px solid transparent; transition: border-color 0.2s;
+}
+.student-row:hover { border-color: var(--purple-light); }
+.student-name { flex: 1; font-size: 15px; }
+.student-btns { display: flex; gap: 6px; align-items: center; }
+.stu-note { width: 120px; font-size: 13px; padding: 4px 8px; }
+.submit-btn {
+  padding: 6px 14px; border: 2px solid; border-radius: var(--radius-sm);
+  font-family: 'Itim', cursive; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; opacity: 0.35;
+}
+.submit-btn.selected { opacity: 1; }
+.submit-btn.sent { background: var(--green-light); border-color: var(--green-dark); color: var(--green-dark); }
+.submit-btn.not-sent { background: var(--red-light); border-color: var(--red-dark); color: var(--red-dark); }
+@media (max-width: 600px) {
+  .student-row { flex-wrap: wrap; }
+  .student-name { width: 100%; flex: none; font-size: 14px; }
+  .student-btns { width: 100%; justify-content: flex-start; }
+  .stu-note { flex: 1; }
+}
+
+/* SUMMARY TABLE */
+.table-wrapper { overflow-x: auto; }
+table { border-collapse: collapse; min-width: 100%; font-size: 14px; }
+th, td {
+  padding: 8px 10px; border: 1px solid var(--gray);
+  text-align: center; white-space: nowrap;
+}
+th { background: var(--purple-light); color: var(--purple-dark); font-weight: 700; }
+.col-name { text-align: left; position: sticky; left: 0; background: var(--white); z-index: 2; }
+th.col-name { background: var(--purple-light); z-index: 3; }
+tr:hover td { background: var(--pink-light); }
+tr:hover td.col-name { background: var(--pink-light); }
+.circle { display: inline-block; width: 18px; height: 18px; border-radius: 50%; }
+.circle-green { background: var(--green-dark); }
+.circle-red { background: var(--red-dark); }
+.pct-cell { font-weight: 700; border-radius: 6px; padding: 3px 8px; }
+
+/* MISSING LIST */
+.missing-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; background: var(--red-light); border-radius: var(--radius-sm);
+  margin-bottom: 6px; border-left: 4px solid var(--red-dark);
+}
+
+/* BULK EDIT */
+.bulk-textarea {
+  width: 100%; font-family: 'Itim', cursive; font-size: 14px;
+  padding: 12px; border: 2px solid var(--gray); border-radius: var(--radius-sm);
+  min-height: 300px; line-height: 1.8;
+}
+
+/* ATTENDANCE BUTTONS */
+.att-btn {
+  padding: 6px 14px; border: 2px solid; border-radius: var(--radius-sm);
+  font-family: 'Itim', cursive; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; opacity: 0.35; min-width: 46px;
+}
+.att-btn.selected { opacity: 1; }
+.att-btn.present { background: var(--green-light); border-color: var(--green-dark); color: var(--green-dark); }
+.att-btn.leave { background: var(--yellow-light); border-color: var(--yellow-dark); color: var(--yellow-dark); }
+.att-btn.absent { background: var(--red-light); border-color: var(--red-dark); color: var(--red-dark); }
+
+/* ATT STAT TABLE */
+.month-tab-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.month-tab {
+  padding: 5px 12px; border-radius: 20px; border: 2px solid var(--gray);
+  cursor: pointer; font-family: 'Itim', cursive; font-size: 13px;
+  background: var(--white); transition: all 0.2s;
+}
+.month-tab.active { background: var(--blue); border-color: var(--blue-dark); color: var(--blue-dark); font-weight: 700; }
+.month-tab:hover { border-color: var(--blue); }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4); z-index: 200;
+  align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: var(--radius);
+  width: 100%; max-width: 520px; max-height: 90vh;
+  display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  padding: 16px 20px; border-bottom: 2px solid var(--gray);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--purple-light); border-radius: var(--radius) var(--radius) 0 0;
+}
+.modal-title { font-size: 17px; font-weight: 700; color: var(--purple-dark); }
+.modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--gray-dark); }
+.modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+.modal-footer { padding: 12px 20px; border-top: 2px solid var(--gray); display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--green-dark); color: white;
+  padding: 12px 20px; border-radius: var(--radius);
+  font-family: 'Itim', cursive; font-size: 15px;
+  box-shadow: var(--shadow-lg); z-index: 999;
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; max-width: 280px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.error { background: var(--red-dark); }
+
+/* LOADING */
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.7);
+  display: none; align-items: center; justify-content: center; z-index: 500;
+}
+.spinner {
+  width: 48px; height: 48px; border: 5px solid var(--purple-light);
+  border-top-color: var(--purple-dark); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* CALENDAR */
+.cal-popup {
+  position: absolute; background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow-lg); z-index: 150; padding: 12px;
+  min-width: 280px;
+}
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.cal-day-header { text-align: center; font-size: 12px; color: var(--text-light); padding: 4px; }
+.cal-day {
+  text-align: center; padding: 6px 2px; border-radius: 6px;
+  cursor: pointer; font-size: 13px; transition: all 0.15s;
+}
+.cal-day:hover { background: var(--purple-light); }
+.cal-day.today { background: var(--purple); font-weight: 700; }
+.cal-day.selected { background: var(--purple-dark); color: white; }
+.cal-day.empty { cursor: default; }
+.cal-container { position: relative; }
+.date-input-btn {
+  font-family: 'Itim', cursive; font-size: 15px; padding: 8px 12px;
+  border: 2px solid var(--gray); border-radius: var(--radius-sm);
+  background: var(--white); cursor: pointer; min-width: 180px;
+  text-align: left; transition: border-color 0.2s; color: var(--text);
+}
+.date-input-btn:hover { border-color: var(--purple); }
+
+.section-divider {
+  display: flex; align-items: center; gap: 10px; margin: 20px 0 14px;
+}
+.section-divider span { font-size: 16px; font-weight: 700; color: var(--purple-dark); white-space: nowrap; }
+.section-divider::before, .section-divider::after {
+  content: ''; flex: 1; height: 2px; background: var(--purple-light);
+}
+.badge {
+  display: inline-block; padding: 2px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.badge-green { background: var(--green-light); color: var(--green-dark); }
+.badge-red { background: var(--red-light); color: var(--red-dark); }
+.badge-yellow { background: var(--yellow-light); color: var(--yellow-dark); }
+.badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+
+.absent-rank {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; border-radius: var(--radius-sm);
+  margin-bottom: 6px; border-left: 4px solid var(--red-dark);
+}
+.absent-rank:nth-child(1) { background: #fee2e2; }
+.absent-rank:nth-child(2) { background: #fef2f2; }
+.absent-rank:nth-child(n+3) { background: #fff5f5; }
+.absent-rank .rank-num { font-weight: 700; color: var(--red-dark); min-width: 24px; }
+.absent-rank .rank-name { flex: 1; }
+.absent-rank .rank-days { font-weight: 700; color: var(--red-dark); }
+
+.no-data { text-align: center; color: var(--text-light); padding: 24px; font-size: 15px; }
+.group-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+
+.work-header-btn {
+  cursor: pointer; background: var(--blue-light); border-radius: 6px;
+  padding: 2px 6px; font-size: 13px; color: var(--blue-dark);
+  border: 1px solid var(--blue); transition: background 0.2s;
+  max-width: 100px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; display: block;
+}
+.work-header-btn:hover { background: var(--blue); color: white; }
+
+/* Score cell coloring */
+.score-cell { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ======== FIREBASE v8 SDK — must be first in body ======== -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+  // Init immediately after SDKs load — no defer needed
+  var firebaseConfig = {
+    apiKey: "AIzaSyC4gEEb7O79TNnob_YV2B4xshr_wf3ecPA",
+    authDomain: "kruaonn-b38f0.firebaseapp.com",
+    projectId: "kruaonn-b38f0",
+    storageBucket: "kruaonn-b38f0.firebasestorage.app",
+    messagingSenderId: "793167882254",
+    appId: "1:793167882254:web:e2dab6c0cfedd51ac6745f"
+  };
+  if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+  var db = firebase.firestore();
+</script>
+
+
+<nav>
+  <div class="nav-brand">🌸 ครูปิยะนุช</div>
+  <button class="nav-btn active" onclick="showSection('assign')">📝 บันทึกส่งงาน</button>
+  <button class="nav-btn" onclick="showSection('summary')">📊 สรุปส่งงาน</button>
+  <button class="nav-btn" onclick="showSection('attend')">📅 บันทึกมาเรียน</button>
+  <button class="nav-btn" onclick="showSection('attstats')">📈 สถิติมาเรียน</button>
+  <button class="nav-btn" onclick="showSection('students')">👥 แก้ไขรายชื่อ</button>
+</nav>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ===================== SECTION 1: บันทึกส่งงาน ===================== -->
+<div class="section active" id="section-assign">
+  <div class="card">
+    <div class="card-title">📝 บันทึกการส่งงาน</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ระดับชั้น</label>
+        <select id="assign-level" onchange="onAssignLevelChange()">
+          <option value="">-- เลือกชั้น --</option>
+          <option value="p4">ป.4</option>
+          <option value="p5">ป.5</option>
+          <option value="p6">ป.6</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>รายวิชา</label>
+        <select id="assign-subject">
+          <option value="">-- เลือกวิชา --</option>
+          <option value="english">ภาษาอังกฤษ</option>
+          <option value="health">สุขศึกษา</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ชื่อชิ้นงาน</label>
+        <input type="text" id="assign-work-name" placeholder="เช่น ใบงานที่ 1">
+      </div>
+      <div class="form-group">
+        <label>วันที่</label>
+        <div class="cal-container">
+          <button class="date-input-btn" id="assign-date-btn" onclick="toggleCal('assign')">📅 วันนี้</button>
+          <div class="cal-popup" id="assign-cal" style="display:none;top:42px;left:0;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:0;">
+      <div class="form-group" style="flex:2; min-width:200px;">
+        <label>หมายเหตุ (ไม่บังคับ)</label>
+        <input type="text" id="assign-note" placeholder="หมายเหตุรวม...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="assign-student-card" style="display:none;">
+    <div class="card-title">👥 รายชื่อนักเรียน</div>
+    <div class="group-btns">
+      <button class="btn btn-success btn-sm" onclick="setAllAssign('sent')">✅ ส่งทั้งหมด</button>
+      <button class="btn btn-danger btn-sm" onclick="setAllAssign('not-sent')">❌ ไม่ส่งทั้งหมด</button>
+      <button class="btn btn-gray btn-sm" onclick="setAllAssign('')">⬜ ไม่เลือกทั้งหมด</button>
+    </div>
+    <div class="student-grid" id="assign-student-list"></div>
+    <div style="margin-top:14px; display:flex; gap:8px;">
+      <button class="btn btn-primary" onclick="saveAssignment()">💾 บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 2: สรุปส่งงาน ===================== -->
+<div class="section" id="section-summary">
+  <div class="card">
+    <div class="card-title">📊 สรุปการส่งงาน</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ระดับชั้น</label>
+        <select id="sum-level" onchange="loadSummary()">
+          <option value="">-- เลือกชั้น --</option>
+          <option value="p4">ป.4</option>
+          <option value="p5">ป.5</option>
+          <option value="p6">ป.6</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>รายวิชา</label>
+        <select id="sum-subject" onchange="loadSummary()">
+          <option value="">-- เลือกวิชา --</option>
+          <option value="english">ภาษาอังกฤษ (เต็ม 70)</option>
+          <option value="health">สุขศึกษา (เต็ม 80)</option>
+        </select>
+      </div>
+      <div style="align-self:flex-end;">
+        <button class="btn btn-danger btn-sm" onclick="deleteAllWorks()">🗑️ ลบชิ้นงานทั้งหมดในวิชานี้</button>
+      </div>
+    </div>
+  </div>
+  <div id="summary-content"></div>
+</div>
+
+<!-- ===================== SECTION 3: บันทึกมาเรียน ===================== -->
+<div class="section" id="section-attend">
+  <div class="card">
+    <div class="card-title">📅 บันทึกการมาเรียน</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ระดับชั้น</label>
+        <select id="att-level" onchange="onAttLevelChange()">
+          <option value="">-- เลือกชั้น --</option>
+          <option value="p4">ป.4</option>
+          <option value="p5">ป.5</option>
+          <option value="p6">ป.6</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>รายวิชา</label>
+        <select id="att-subject">
+          <option value="">-- เลือกวิชา --</option>
+          <option value="english">ภาษาอังกฤษ</option>
+          <option value="health">สุขศึกษา</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>วันที่</label>
+        <div class="cal-container">
+          <button class="date-input-btn" id="att-date-btn" onclick="toggleCal('att')">📅 วันนี้</button>
+          <div class="cal-popup" id="att-cal" style="display:none;top:42px;left:0;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="att-student-card" style="display:none;">
+    <div class="card-title">👥 เช็กเวลาเรียน</div>
+    <div class="group-btns">
+      <button class="btn btn-success btn-sm" onclick="setAllAtt('present')">✅ มาทั้งหมด</button>
+      <button class="btn btn-warning btn-sm" onclick="setAllAtt('leave')">📋 ลาทั้งหมด</button>
+      <button class="btn btn-danger btn-sm" onclick="setAllAtt('absent')">❌ ขาดทั้งหมด</button>
+      <button class="btn btn-gray btn-sm" onclick="setAllAtt('')">⬜ ไม่เลือกทั้งหมด</button>
+    </div>
+    <div class="student-grid" id="att-student-list"></div>
+    <div style="margin-top:14px;">
+      <button class="btn btn-primary" onclick="saveAttendance()">💾 บันทึกการมาเรียน</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 4: สถิติมาเรียน ===================== -->
+<div class="section" id="section-attstats">
+  <div class="card">
+    <div class="card-title">📈 สถิติการมาเรียน</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ระดับชั้น</label>
+        <select id="stats-level" onchange="loadAttStats()">
+          <option value="">-- เลือกชั้น --</option>
+          <option value="p4">ป.4</option>
+          <option value="p5">ป.5</option>
+          <option value="p6">ป.6</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>รายวิชา</label>
+        <select id="stats-subject" onchange="loadAttStats()">
+          <option value="">-- เลือกวิชา --</option>
+          <option value="english">ภาษาอังกฤษ</option>
+          <option value="health">สุขศึกษา</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="attstats-content"></div>
+</div>
+
+<!-- ===================== SECTION 5: แก้ไขรายชื่อ ===================== -->
+<div class="section" id="section-students">
+  <div class="card">
+    <div class="card-title">👥 แก้ไขรายชื่อนักเรียน</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ระดับชั้น</label>
+        <select id="edit-level" onchange="loadStudentEdit()">
+          <option value="">-- เลือกชั้น --</option>
+          <option value="p4">ป.4</option>
+          <option value="p5">ป.5</option>
+          <option value="p6">ป.6</option>
+        </select>
+      </div>
+    </div>
+    <div id="student-edit-area" style="display:none;">
+      <label style="display:block;margin-bottom:6px;">รายชื่อ (หนึ่งชื่อต่อบรรทัด)</label>
+      <textarea class="bulk-textarea" id="bulk-edit-ta"></textarea>
+      <div style="margin-top:10px;">
+        <button class="btn btn-primary" onclick="saveBulkStudents()">💾 บันทึกรายชื่อ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALS ===================== -->
+<!-- Work detail modal -->
+<div class="modal-overlay" id="workModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="workModal-title">ชิ้นงาน</span>
+      <button class="modal-close" onclick="closeModal('workModal')">✕</button>
+    </div>
+    <div class="modal-body" id="workModal-body"></div>
+    <div class="modal-footer" id="workModal-footer"></div>
+  </div>
+</div>
+<!-- Confirm modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header"><span class="modal-title">⚠️ ยืนยัน</span></div>
+    <div class="modal-body" id="confirmModal-msg" style="padding:20px;font-size:16px;"></div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="confirmModal-ok">ยืนยัน</button>
+      <button class="btn btn-gray" onclick="closeModal('confirmModal')">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+// ============ DEFAULT STUDENTS ============
+const DEFAULT_STUDENTS = {
+  p4: [
+    "เด็กชายรัฐชภูมิ ลำดวน","เด็กชายพงศ์พัทธ์ ทิ้งเสน","เด็กชายไชยวัฒน์ สมฤทธิ์","เด็กชายสุกฤษฏ์ ช่วยวิเศษ",
+    "เด็กชายนวพล มาดล","เด็กชายสุทธิภัทร วิบูลย์อรรถ","เด็กชายคุณพัฒน์ กลางประพันธ์","เด็กชายณัฐพล อรกุล",
+    "เด็กชายอภิษฎา ผาริวงค์","เด็กหญิงจิราพัชร บุญคง","เด็กหญิงนิษาชล กิ่งรัก","เด็กหญิงเบญทิชา ศรีมันตะ",
+    "เด็กหญิงวิยะดา ดวงแก้ว","เด็กหญิงนภสร พรมอวน","เด็กหญิงศิริญญา วรรณโนมัย","เด็กหญิงอริสา สุขสวาง",
+    "เด็กหญิงณัฏฐณิชา ศิลาพันธ์","เด็กหญิงสุภาวิณี ดิษฐ์กิ่ง","เด็กหญิงชุติกานต์ ธงวาส","เด็กหญิงณัฏฐธิดา ทองศรี",
+    "เด็กชายอินร์ธา ดันไธสง"
+  ],
+  p5: [
+    "เด็กชายวสุธร เกตหอม","เด็กชายพีรยุ เปล่งปลื้ม","เด็กชายธนพัฒน์ กาเผือก","เด็กชายกิติพัฒน์ อำขำ",
+    "เด็กชายรามเกียรติ์ มุกธะวัตร","เด็กชายไวทย์ปวร การะเกตุ","เด็กชายศุภกิตติ์ แก้วดี","เด็กชายศิลปกรณ์ วงศ์ชมภู",
+    "เด็กชายณัฐวัชร์ สุขสนิท","เด็กหญิงปภาวดี รักบุญ","เด็กหญิงณัฐนัน วงษ์ศิริ","เด็กหญิงรัตธิดา พรมธิ",
+    "เด็กหญิงศรุดา ทองศรี","เด็กหญิงอรกช คล้ายทอง","เด็กหญิงกัญญาภัทร เสวนา","เด็กหญิงปวิตรา บุญขาว",
+    "เด็กหญิงเตชินี จันทร์ป้อง","เด็กหญิงณัฐฐา ทิพวรรณ","เด็กหญิงประภาพร สุขสนิท","เด็กหญิงณัฐริกา จินา",
+    "เด็กหญิงวรรณวิสาข์ สุขสนิท"
+  ],
+  p6: [
+    "เด็กชายธนกฤต คูณศรี","เด็กหญิงกัญญารัตน์ สัมฤทธิ์","เด็กหญิงปนิดา อุสาหพันธ์","เด็กหญิงชลิตา แก้วดี",
+    "เด็กชายพงษ์ศกร ทองศรี","เด็กชายณัฐวุฒิ บุญเอื้อ","เด็กชายสุธีร์ ธงวาส","เด็กชายณภัทร กุลโท",
+    "เด็กชายวิทยธร ไชยกุล","เด็กหญิงพิมพ์วิมล เกตหอม","เด็กหญิงปิยรัตน์ สีมารถ","เด็กชายนันทิพัฒน์ สีบัวลา",
+    "เด็กชายธราเขต ลาภสาร","เด็กหญิงประภัสสร กิ่งมาลา","เด็กชายพลวัตร สมฤทธิ์","เด็กชายอนุวัตร์ พรมภักดี",
+    "เด็กชายคุณานนท์ คูณศรี","เด็กชายประตินันท์ ขุนศักดิ์ทอง","เด็กชายชิษณุพงค์ บุตรคุณ","เด็กหญิงกุลภัสสร์ โพธิ์จันทร์"
+  ]
+};
+
+const SUBJECT_MAX = { english: 70, health: 80 };
+const TH_MONTHS = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const SCHOOL_MONTHS = [
+  {m:5,y:68},{m:6,y:68},{m:7,y:68},{m:8,y:68},{m:9,y:68},{m:10,y:68},
+  {m:11,y:68},{m:12,y:68},{m:1,y:69},{m:2,y:69},{m:3,y:69}
+];
+
+let studentsCache = {};
+
+// ============ HELPERS ============
+function showLoading(){ const el=document.getElementById('loadingOverlay'); el.style.display='flex'; el.style.alignItems='center'; el.style.justifyContent='center'; }
+function hideLoading(){ document.getElementById('loadingOverlay').style.display='none'; }
+function showToast(msg, isError=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError?' error':'') + ' show';
+  setTimeout(()=>{ t.className='toast'+(isError?' error':''); }, 3000);
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function confirm2(msg, cb){
+  document.getElementById('confirmModal-msg').textContent = msg;
+  document.getElementById('confirmModal-ok').onclick = ()=>{ closeModal('confirmModal'); cb(); };
+  openModal('confirmModal');
+}
+
+// ============ CALENDAR ============
+const calState = {};
+function initCal(id){
+  const now = new Date();
+  calState[id] = calState[id] || { year: now.getFullYear(), month: now.getMonth(), selected: null };
+}
+function toggleCal(id){
+  initCal(id);
+  const cal = document.getElementById(id+'-cal');
+  if(cal.style.display==='none'||!cal.style.display){ renderCal(id); cal.style.display='block'; }
+  else cal.style.display='none';
+}
+function renderCal(id){
+  initCal(id);
+  const s = calState[id];
+  const thYear = s.year + 543;
+  const firstDay = new Date(s.year, s.month, 1).getDay();
+  const daysInMonth = new Date(s.year, s.month+1, 0).getDate();
+  const today = new Date();
+  let html = `<div class="cal-header">
+    <button onclick="calNav('${id}',-1)" style="background:none;border:none;cursor:pointer;font-size:18px;color:#7c3aed;">&#8249;</button>
+    <span style="font-weight:700;color:#7c3aed;">${TH_MONTHS[s.month]} ${thYear}</span>
+    <button onclick="calNav('${id}',1)" style="background:none;border:none;cursor:pointer;font-size:18px;color:#7c3aed;">&#8250;</button>
+  </div>
+  <div class="cal-grid">
+    <div class="cal-day-header">อา</div><div class="cal-day-header">จ</div><div class="cal-day-header">อ</div>
+    <div class="cal-day-header">พ</div><div class="cal-day-header">พฤ</div><div class="cal-day-header">ศ</div>
+    <div class="cal-day-header">ส</div>`;
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday = (d===today.getDate()&&s.month===today.getMonth()&&s.year===today.getFullYear());
+    const isSel = s.selected && s.selected.d===d && s.selected.m===s.month && s.selected.y===s.year;
+    html+=`<div class="cal-day${isToday?' today':''}${isSel?' selected':''}" onclick="calSelect('${id}',${d})">${d}</div>`;
+  }
+  html+='</div>';
+  document.getElementById(id+'-cal').innerHTML = html;
+}
+function calNav(id, dir){
+  initCal(id);
+  calState[id].month += dir;
+  if(calState[id].month>11){ calState[id].month=0; calState[id].year++; }
+  if(calState[id].month<0){ calState[id].month=11; calState[id].year--; }
+  renderCal(id);
+}
+function calSelect(id, d){
+  initCal(id);
+  const s = calState[id];
+  s.selected = { d, m: s.month, y: s.year };
+  const thYear = s.year + 543;
+  const label = `${d} ${TH_MONTHS[s.month]} ${thYear}`;
+  document.getElementById(id+'-date-btn').textContent = '📅 ' + label;
+  document.getElementById(id+'-cal').style.display='none';
+  renderCal(id);
+  if(id==='att') onAttDateChange();
+}
+function getSelectedDate(id){
+  initCal(id);
+  const s = calState[id];
+  if(!s.selected){
+    const now = new Date();
+    return { d: now.getDate(), m: now.getMonth(), y: now.getFullYear() };
+  }
+  return s.selected;
+}
+function dateKey(sel){ return `${sel.y}-${String(sel.m+1).padStart(2,'0')}-${String(sel.d).padStart(2,'0')}`; }
+
+// Init date buttons with today
+(function(){
+  const now = new Date();
+  const thYear = now.getFullYear() + 543;
+  const label = `${now.getDate()} ${TH_MONTHS[now.getMonth()]} ${thYear}`;
+  ['assign','att'].forEach(id=>{
+    const btn = document.getElementById(id+'-date-btn');
+    if(btn) btn.textContent = '📅 '+label;
+    calState[id] = { year: now.getFullYear(), month: now.getMonth(), selected: { d: now.getDate(), m: now.getMonth(), y: now.getFullYear() } };
+  });
+})();
+
+// Close cal on outside click
+document.addEventListener('click', function(e){
+  ['assign','att'].forEach(id=>{
+    const btn = document.getElementById(id+'-date-btn');
+    const cal = document.getElementById(id+'-cal');
+    if(btn&&cal&&!btn.contains(e.target)&&!cal.contains(e.target)) cal.style.display='none';
+  });
+});
+
+// ============ SECTION NAV ============
+function showSection(sec){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('section-'+sec).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ============ STUDENTS ============
+async function getStudents(level){
+  if(studentsCache[level]) return studentsCache[level];
+  showLoading();
+  try {
+    const snap = await db.collection('students').doc(level).get();
+    if(snap.exists && snap.data().list){ studentsCache[level]=snap.data().list; }
+    else { studentsCache[level]=[...DEFAULT_STUDENTS[level]]; }
+  } catch(e){ studentsCache[level]=[...(DEFAULT_STUDENTS[level]||[])]; }
+  hideLoading();
+  return studentsCache[level];
+}
+
+// ============ ASSIGN SECTION ============
+async function onAssignLevelChange(){
+  const level = document.getElementById('assign-level').value;
+  if(!level){ document.getElementById('assign-student-card').style.display='none'; return; }
+  const students = await getStudents(level);
+  renderAssignList(students);
+  document.getElementById('assign-student-card').style.display='block';
+}
+function renderAssignList(students){
+  const list = document.getElementById('assign-student-list');
+  list.innerHTML = students.map((name,i)=>`
+    <div class="student-row" id="arow-${i}">
+      <span class="student-name">${name}</span>
+      <div class="student-btns">
+        <button class="submit-btn sent" id="abtn-sent-${i}" onclick="selectAssign(${i},'sent')">✅ ส่ง</button>
+        <button class="submit-btn not-sent" id="abtn-notsent-${i}" onclick="selectAssign(${i},'not-sent')">❌ ไม่ส่ง</button>
+        <input type="text" class="stu-note" id="anote-${i}" placeholder="หมายเหตุ...">
+      </div>
+    </div>`).join('');
+}
+function selectAssign(i, status){
+  ['sent','not-sent'].forEach(s=>document.getElementById(`abtn-${s}-${i}`).classList.remove('selected'));
+  document.getElementById(`abtn-${status}-${i}`).classList.add('selected');
+}
+function setAllAssign(status){
+  const n = document.getElementById('assign-student-list').children.length;
+  for(let i=0;i<n;i++){
+    ['sent','not-sent'].forEach(s=>{ const b=document.getElementById(`abtn-${s}-${i}`); if(b) b.classList.remove('selected'); });
+    if(status) document.getElementById(`abtn-${status}-${i}`)?.classList.add('selected');
+  }
+}
+async function saveAssignment(){
+  const level = document.getElementById('assign-level').value;
+  const subject = document.getElementById('assign-subject').value;
+  const workName = document.getElementById('assign-work-name').value.trim();
+  if(!level||!subject||!workName){ showToast('กรุณากรอกข้อมูลให้ครบ',true); return; }
+  const sel = getSelectedDate('assign');
+  const dk = dateKey(sel);
+  const students = await getStudents(level);
+  const results = {};
+  students.forEach((name,i)=>{
+    const sent = document.getElementById(`abtn-sent-${i}`)?.classList.contains('selected');
+    const note = document.getElementById(`anote-${i}`)?.value||'';
+    results[name] = { status: sent ? 'sent' : 'not-sent', note };
+  });
+  showLoading();
+  try {
+    const docKey = `${level}_${subject}_${dk}_${workName}`;
+    await db.collection('assignments').doc(docKey).set({
+      level, subject, date: dk, workName,
+      note: document.getElementById('assign-note').value.trim(),
+      results, createdAt: Date.now()
+    });
+    showToast('✅ บันทึกสำเร็จ!');
+  } catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,true); }
+  hideLoading();
+}
+
+// ============ SUMMARY SECTION ============
+async function loadSummary(){
+  const level = document.getElementById('sum-level').value;
+  const subject = document.getElementById('sum-subject').value;
+  if(!level||!subject){ document.getElementById('summary-content').innerHTML=''; return; }
+  showLoading();
+  try {
+    const students = await getStudents(level);
+    const snap = await db.collection('assignments').get();
+    const docs = [];
+    snap.forEach(d=>{ const data=d.data(); if(data.level===level&&data.subject===subject) docs.push({id:d.id,...data}); });
+    docs.sort((a,b)=>a.date.localeCompare(b.date));
+    renderSummary(students, docs, subject);
+  } catch(e){ showToast('โหลดข้อมูลไม่สำเร็จ: '+e.message,true); }
+  hideLoading();
+}
+function renderSummary(students, docs, subject){
+  if(!docs.length){ document.getElementById('summary-content').innerHTML='<div class="card"><div class="no-data">ยังไม่มีชิ้นงาน</div></div>'; return; }
+  const maxScore = SUBJECT_MAX[subject];
+  let html = `<div class="card"><div class="card-title">📋 ตารางสรุป</div><div class="table-wrapper"><table>
+    <thead><tr><th class="col-name">ชื่อ-สกุล</th>`;
+  docs.forEach(d=>{ html+=`<th><button class="work-header-btn" onclick="openWorkModal('${d.id}')" title="${d.workName}">${d.workName}<br><small style="font-size:10px;">${formatDateShort(d.date)}</small></button></th>`; });
+  html+=`<th>รวม</th><th>%</th><th>คะแนนเก็บ<br><small>(/${maxScore})</small></th></tr></thead><tbody>`;
+  const missingCount = {};
+  students.forEach(name=>{
+    missingCount[name]=0; let sent=0;
+    html+=`<tr><td class="col-name">${name}</td>`;
+    docs.forEach(d=>{
+      const r=d.results?.[name]; const s=r?r.status:'not-sent';
+      if(s==='sent') sent++; else missingCount[name]++;
+      html+=`<td><span class="circle circle-${s==='sent'?'green':'red'}" title="${r?.note||''}"></span></td>`;
+    });
+    const total=docs.length; const pct=total?Math.round(sent/total*100):0;
+    const score=total?Math.round(sent/total*maxScore):0;
+    const pctColor=pct>=80?'#16a34a':pct>=60?'#d97706':'#dc2626';
+    html+=`<td>${sent}/${total}</td>
+      <td><span class="pct-cell" style="background:${pctColor}22;color:${pctColor};">${pct}%</span></td>
+      <td class="score-cell" style="color:${pctColor};">${score}</td></tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  const sorted = students.filter(n=>missingCount[n]>0).sort((a,b)=>missingCount[b]-missingCount[a]);
+  if(sorted.length){
+    html+=`<div class="card"><div class="card-title">⚠️ นักเรียนที่ยังไม่ส่งงาน</div>`;
+    sorted.forEach(name=>{ html+=`<div class="missing-item"><span>${name}</span><span class="badge badge-red">ขาด ${missingCount[name]} ชิ้น</span></div>`; });
+    html+=`</div>`;
+  }
+  document.getElementById('summary-content').innerHTML=html;
+}
+function formatDateShort(dk){
+  const parts=dk.split('-'); const thY=parseInt(parts[0])+543;
+  return `${parseInt(parts[2])} ${TH_MONTHS[parseInt(parts[1])-1].substring(0,3)} ${thY}`;
+}
+
+// Work modal
+let currentWorkId = null;
+async function openWorkModal(workId){
+  showLoading();
+  currentWorkId = workId;
+  const snap = await db.collection('assignments').doc(workId).get();
+  hideLoading();
+  if(!snap.exists) return;
+  const data = snap.data();
+  const students = await getStudents(data.level);
+  document.getElementById('workModal-title').textContent = data.workName;
+  let body = `<p style="margin-bottom:12px;color:#6b7280;font-size:13px;">📅 ${formatDateShort(data.date)}</p><div class="student-grid">`;
+  students.forEach((name,i)=>{
+    const r=data.results?.[name]||{status:'not-sent',note:''};
+    body+=`<div class="student-row" style="flex-wrap:wrap;">
+      <span class="student-name">${name}</span>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+        <button class="submit-btn sent ${r.status==='sent'?'selected':''}" id="wmod-sent-${i}" onclick="wmodSelect(${i},'sent')">✅ ส่ง</button>
+        <button class="submit-btn not-sent ${r.status==='not-sent'?'selected':''}" id="wmod-notsent-${i}" onclick="wmodSelect(${i},'not-sent')">❌ ไม่ส่ง</button>
+        <input type="text" class="stu-note" id="wmod-note-${i}" value="${r.note||''}" placeholder="หมายเหตุ...">
+      </div>
+    </div>`;
+  });
+  body+=`</div><div style="margin-top:16px;padding-top:14px;border-top:2px solid #e5e7eb;">
+    <label style="font-size:13px;color:#6b7280;">แก้ไขชื่อชิ้นงาน</label>
+    <input type="text" id="wmod-rename" value="${data.workName}" style="margin-top:4px;width:100%;">
+  </div>`;
+  document.getElementById('workModal-body').innerHTML=body;
+  document.getElementById('workModal-footer').innerHTML=`
+    <button class="btn btn-primary btn-sm" onclick="saveWorkModal('${data.level}','${data.subject}')">💾 บันทึก</button>
+    <button class="btn btn-danger btn-sm" onclick="deleteWork('${workId}')">🗑️ ลบชิ้นงาน</button>
+    <button class="btn btn-gray btn-sm" onclick="closeModal('workModal')">ปิด</button>`;
+  openModal('workModal');
+}
+function wmodSelect(i,status){
+  ['sent','not-sent'].forEach(s=>document.getElementById(`wmod-${s}-${i}`)?.classList.remove('selected'));
+  document.getElementById(`wmod-${status}-${i}`)?.classList.add('selected');
+}
+async function saveWorkModal(level, subject){
+  const students = await getStudents(level);
+  const snap = await db.collection('assignments').doc(currentWorkId).get();
+  if(!snap.exists) return;
+  const data = snap.data();
+  const results = {};
+  students.forEach((name,i)=>{
+    const sent=document.getElementById(`wmod-sent-${i}`)?.classList.contains('selected');
+    results[name]={status:sent?'sent':'not-sent', note:document.getElementById(`wmod-note-${i}`)?.value||''};
+  });
+  const newName = document.getElementById('wmod-rename').value.trim()||data.workName;
+  showLoading();
+  try {
+    await db.collection('assignments').doc(currentWorkId).set({...data,results,workName:newName});
+    showToast('✅ แก้ไขสำเร็จ!'); closeModal('workModal'); loadSummary();
+  } catch(e){ showToast('เกิดข้อผิดพลาด',true); }
+  hideLoading();
+}
+function deleteWork(workId){
+  confirm2('ต้องการลบชิ้นงานนี้?', async ()=>{
+    showLoading();
+    await db.collection('assignments').doc(workId).delete();
+    hideLoading(); showToast('🗑️ ลบแล้ว'); closeModal('workModal'); loadSummary();
+  });
+}
+function deleteAllWorks(){
+  const level=document.getElementById('sum-level').value;
+  const subject=document.getElementById('sum-subject').value;
+  if(!level||!subject){ showToast('เลือกชั้นและวิชาก่อน',true); return; }
+  confirm2('ต้องการลบชิ้นงานทั้งหมดในวิชานี้?', async ()=>{
+    showLoading();
+    const snap=await db.collection('assignments').get();
+    const batch=db.batch();
+    snap.forEach(d=>{ if(d.data().level===level&&d.data().subject===subject) batch.delete(d.ref); });
+    await batch.commit();
+    hideLoading(); showToast('🗑️ ลบทั้งหมดแล้ว'); loadSummary();
+  });
+}
+
+// ============ ATTENDANCE ============
+async function onAttLevelChange(){
+  const level=document.getElementById('att-level').value;
+  if(!level){ document.getElementById('att-student-card').style.display='none'; return; }
+  await renderAttList();
+  document.getElementById('att-student-card').style.display='block';
+}
+function onAttDateChange(){ renderAttList(); }
+async function renderAttList(){
+  const level=document.getElementById('att-level').value;
+  const subject=document.getElementById('att-subject').value||'';
+  if(!level) return;
+  const students=await getStudents(level);
+  const sel=getSelectedDate('att');
+  const dk=dateKey(sel);
+  let existing={};
+  if(subject){
+    try{
+      const snap=await db.collection('attendance').doc(`${level}_${subject}_${dk}`).get();
+      if(snap.exists) existing=snap.data().records||{};
+    }catch(e){}
+  }
+  const list=document.getElementById('att-student-list');
+  list.innerHTML=students.map((name,i)=>{
+    const st=existing[name]||'';
+    return `<div class="student-row">
+      <span class="student-name">${name}</span>
+      <div class="student-btns">
+        <button class="att-btn present ${st==='present'?'selected':''}" id="abtn-present-${i}" onclick="selectAtt(${i},'present')">มา</button>
+        <button class="att-btn leave ${st==='leave'?'selected':''}" id="abtn-leave-${i}" onclick="selectAtt(${i},'leave')">ลา</button>
+        <button class="att-btn absent ${st==='absent'?'selected':''}" id="abtn-absent-${i}" onclick="selectAtt(${i},'absent')">ขาด</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function selectAtt(i,status){
+  ['present','leave','absent'].forEach(s=>document.getElementById(`abtn-${s}-${i}`)?.classList.remove('selected'));
+  document.getElementById(`abtn-${status}-${i}`)?.classList.add('selected');
+}
+function setAllAtt(status){
+  const n=document.getElementById('att-student-list').children.length;
+  for(let i=0;i<n;i++){
+    ['present','leave','absent'].forEach(s=>document.getElementById(`abtn-${s}-${i}`)?.classList.remove('selected'));
+    if(status) document.getElementById(`abtn-${status}-${i}`)?.classList.add('selected');
+  }
+}
+async function saveAttendance(){
+  const level=document.getElementById('att-level').value;
+  const subject=document.getElementById('att-subject').value;
+  if(!level||!subject){ showToast('เลือกชั้นและวิชาก่อน',true); return; }
+  const students=await getStudents(level);
+  const sel=getSelectedDate('att');
+  const dk=dateKey(sel);
+  const records={};
+  students.forEach((name,i)=>{
+    const p=document.getElementById(`abtn-present-${i}`)?.classList.contains('selected');
+    const l=document.getElementById(`abtn-leave-${i}`)?.classList.contains('selected');
+    records[name]=p?'present':l?'leave':'absent';
+  });
+  showLoading();
+  try{
+    await db.collection('attendance').doc(`${level}_${subject}_${dk}`).set({
+      level,subject,date:dk,records,savedAt:Date.now()
+    });
+    showToast('✅ บันทึกการมาเรียนสำเร็จ!');
+  }catch(e){ showToast('เกิดข้อผิดพลาด: '+e.message,true); }
+  hideLoading();
+}
+
+// ============ ATTENDANCE STATS ============
+async function loadAttStats(){
+  const level=document.getElementById('stats-level').value;
+  const subject=document.getElementById('stats-subject').value;
+  if(!level||!subject){ document.getElementById('attstats-content').innerHTML=''; return; }
+  showLoading();
+  try{
+    const students=await getStudents(level);
+    const snap=await db.collection('attendance').get();
+    const allDocs=[];
+    snap.forEach(d=>{ const dt=d.data(); if(dt.level===level&&dt.subject===subject) allDocs.push(dt); });
+    renderAttStats(students, allDocs);
+  }catch(e){ showToast('โหลดข้อมูลไม่สำเร็จ: '+e.message,true); }
+  hideLoading();
+}
+
+let currentStatsMonth='all';
+let currentStatsStudents=[];
+let currentStatsDocs=[];
+
+function renderAttStats(students, allDocs){
+  currentStatsStudents=students; currentStatsDocs=allDocs;
+  currentStatsMonth='all';
+  renderAttStatsView();
+}
+function renderAttStatsView(){
+  const students=currentStatsStudents; const allDocs=currentStatsDocs;
+  let filtered=allDocs;
+  if(currentStatsMonth!=='all'){
+    const {m,y}=currentStatsMonth;
+    // y is BE short (e.g. 68 = 2568 CE), convert to CE
+    const ceY = y < 100 ? y + 2500 - 543 : y - 543;
+    filtered=allDocs.filter(d=>{
+      const parts=d.date.split('-');
+      return parseInt(parts[0])===ceY && parseInt(parts[1])===m;
+    });
+  }
+  const stats={};
+  students.forEach(n=>{ stats[n]={present:0,leave:0,absent:0}; });
+  filtered.forEach(d=>{
+    students.forEach(n=>{
+      const s=d.records?.[n]||'absent';
+      if(stats[n]) stats[n][s]=(stats[n][s]||0)+1;
+    });
+  });
+  const totalDays=filtered.length;
+  // Build active months set from stored dates
+  const activeMths=new Set();
+  allDocs.forEach(d=>{
+    const parts=d.date.split('-');
+    const ceY=parseInt(parts[0]); const m=parseInt(parts[1]);
+    const beYshort=(ceY+543)%100; // e.g. 2568 -> 68
+    const beYfull=ceY+543;
+    activeMths.add(`${m}_${beYfull}`);
+  });
+  let tabHtml=`<div class="month-tab-row">
+    <button class="month-tab ${currentStatsMonth==='all'?'active':''}" onclick="switchAttTab('all')">ทั้งหมด</button>`;
+  SCHOOL_MONTHS.forEach(({m,y})=>{
+    const beYfull = y < 100 ? y + 2500 : y;
+    if(activeMths.has(`${m}_${beYfull}`)){
+      const isActive=currentStatsMonth!=='all'&&currentStatsMonth.m===m&&currentStatsMonth.y===y;
+      tabHtml+=`<button class="month-tab ${isActive?'active':''}" onclick="switchAttTab(${m},${y})">${TH_MONTHS[m-1].substring(0,3)} ${y}</button>`;
+    }
+  });
+  tabHtml+='</div>';
+  let html=tabHtml;
+  html+=`<div class="card"><div class="card-title">📊 ตารางสรุปการมาเรียน${totalDays?` (${totalDays} วัน)`:''}</div>
+  <div class="table-wrapper"><table><thead><tr>
+    <th class="col-name">ชื่อ-สกุล</th><th>มา</th><th>ลา</th><th>ขาด</th><th>%มา</th>
+  </tr></thead><tbody>`;
+  students.forEach(name=>{
+    const s=stats[name];
+    const total=s.present+s.leave+s.absent;
+    const pct=total?Math.round(s.present/total*100):0;
+    const pctColor=pct>=80?'#16a34a':pct>=60?'#d97706':'#dc2626';
+    html+=`<tr><td class="col-name">${name}</td>
+      <td><span class="badge badge-green">${s.present}</span></td>
+      <td><span class="badge badge-yellow">${s.leave}</span></td>
+      <td><span class="badge badge-red">${s.absent}</span></td>
+      <td><span class="pct-cell" style="background:${pctColor}22;color:${pctColor};">${pct}%</span></td></tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  const sorted=[...students].sort((a,b)=>stats[b].absent-stats[a].absent).filter(n=>stats[n].absent>0);
+  if(sorted.length){
+    html+=`<div class="card"><div class="card-title">🔴 นักเรียนขาดมากที่สุด</div>`;
+    sorted.forEach((name,idx)=>{
+      html+=`<div class="absent-rank"><span class="rank-num">${idx+1}.</span><span class="rank-name">${name}</span><span class="rank-days">ขาด ${stats[name].absent} วัน</span></div>`;
+    });
+    html+=`</div>`;
+  } else {
+    html+=`<div class="card"><div class="no-data">🎉 ไม่มีนักเรียนขาดเรียน!</div></div>`;
+  }
+  document.getElementById('attstats-content').innerHTML=html;
+}
+function switchAttTab(m,y){
+  if(m==='all') currentStatsMonth='all';
+  else currentStatsMonth={m,y};
+  renderAttStatsView();
+}
+
+// ============ BULK EDIT STUDENTS ============
+async function loadStudentEdit(){
+  const level=document.getElementById('edit-level').value;
+  if(!level){ document.getElementById('student-edit-area').style.display='none'; return; }
+  const students=await getStudents(level);
+  document.getElementById('bulk-edit-ta').value=students.join('\n');
+  document.getElementById('student-edit-area').style.display='block';
+}
+async function saveBulkStudents(){
+  const level=document.getElementById('edit-level').value;
+  if(!level){ showToast('เลือกชั้นก่อน',true); return; }
+  const lines=document.getElementById('bulk-edit-ta').value.split('\n').map(l=>l.trim()).filter(l=>l);
+  showLoading();
+  try{
+    await db.collection('students').doc(level).set({list:lines,updatedAt:Date.now()});
+    studentsCache[level]=lines;
+    showToast('✅ บันทึกรายชื่อสำเร็จ!');
+  }catch(e){ showToast('เกิดข้อผิดพลาด',true); }
+  hideLoading();
+}
+
+// ============ CLOSE MODALS ============
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('open'); });
+});
+document.getElementById('att-subject').addEventListener('change', renderAttList);
+
+</script>
+</body>
+</html>
